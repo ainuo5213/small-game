@@ -1,0 +1,40 @@
+#game-board {
+  position: relative;
+  margin: auto;
+}
+
+div.item {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+}
+
+div.item.wall {
+  background: url(../img/wall.png);
+  background-size: 40px 40px;
+}
+
+div.item.ground {
+  background: url(../img/ground.png);
+  background-size: 40px 40px;
+}
+
+div.item.player {
+  background: url(../img/man.png);
+  background-size: 40px 40px;
+}
+
+div.item.box {
+  background: url(../img/box.png);
+  background-size: 40px 40px;
+}
+
+div.item.target {
+  background: url(../img/target.png);
+  background-size: 40px 40px;
+}
+
+div.item.arrive {
+  background: url(../img/arrive.png);
+  background-size: 40px 40px;
+}
