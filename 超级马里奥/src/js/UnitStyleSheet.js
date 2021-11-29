@@ -14,12 +14,14 @@ export default class UnitStyleSheet {
     }
 
     /**
-     * 存储需要裁剪的图片
+     * 裁剪人物
      * @param {string} name 画布名称
-     * @param {number} x 需要裁剪的图片x与单位高度倍数
-     * @param {number} y 需要裁剪的图片y与单位高度倍数
+     * @param {number} x 需要裁剪的图片x位置
+     * @param {number} y 需要裁剪的图片y位置
+     * @param {number} width 裁剪宽度
+     * @param {number} height 裁剪高度
      */
-    define(name, x, y) {
+    define(name, x, y, width, height) {
         const canvas = document.createElement("canvas");
         canvas.width = this.width;
         canvas.height = this.height;
@@ -28,15 +30,25 @@ export default class UnitStyleSheet {
         canvas.getContext("2d")
             .drawImage(
                 this.image,
-                x * this.width,
-                y * this.height,
-                this.width,
-                this.height,
+                x,
+                y,
+                width,
+                height,
                 0,
                 0,
-                this.width,
-                this.height);
+                width,
+                height);
         this.tiles.set(name, canvas);
+    }
+
+    /**
+     * 裁剪背景（背景需要重复裁剪）
+     * @param {string} name 画布名称
+     * @param {number} x 需要裁剪的图片x与单位高度倍数
+     * @param {number} y 需要裁剪的图片y与单位高度倍数
+     */
+    defineTile(name, x, y) {
+        this.define(name, x * this.width, y * this.height, this.width, this.height);
     }
 
     /**

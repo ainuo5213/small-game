@@ -1,29 +1,34 @@
-import UnitStyleSheet from "./UnitStyleSheet.js";
-import { loadImageAsync, loadLevelAsync } from "./loader.js";
-
-function drawBackground(background, context, unitStyleSheet) {
-    background.ranges.forEach(([x1, x2, y1, y2]) => {
-        for (let x = x1; x < x2; x++) {
-            for (let y = y1; y < y2; y++) {
-                unitStyleSheet.drawTile(background.tile, context, x, y);
-            }
-        }
-    })
-}
+import { loadLevelAsync } from "./loader.js";
+import { loadBackgroundSprites, loadMarioSprite } from "./sprites.js";
+import { Compositor } from "./Compositor.js";
+import { createBackgroundLayer, createrSpriteLayer } from "./layers.js";
 
 const canvas = document.getElementById("screen");
 const context = canvas.getContext("2d");
 
-loadImageAsync("/src/assets/tiles.png")
-    .then(image => {
-        // 创建单位图像样式对象，并定义裁剪起始位置来裁剪图像
-        const unitStyleSheet = new UnitStyleSheet(image, 16, 16);
-        unitStyleSheet.define("ground", 0, 0);
-        unitStyleSheet.define("sky", 3, 23);
-        loadLevelAsync('1-1')
-            .then(level => {
-                level.backgrounds.forEach(background => {
-                    drawBackground(background, context, unitStyleSheet);
-                })
-            });
-    });
+Promise.all([
+    loadMarioSprite(),
+    loadBackgroundSprites(),
+    loadLevelAsync('1-1')
+]).then(([marioSprite, backgroundSprite, level]) => {
+    const backgroundLayer = createBackgroundLayer(level.backgrounds, backgroundSprite);
+    const comp = new Compositor();
+    comp.layers.push(backgroundLayer);
+
+    const pos = {
+        x: 0,
+        y: 0
+    };
+
+    const spriteLayer = createrSpriteLayer(marioSprite, pos);
+    comp.layers.push(spriteLayer);
+
+    function update() {
+        comp.draw(context);
+        pos.x += 2;
+        pos.y += 2;
+        requestAnimationFrame(update);
+    }
+
+    update();
+});
