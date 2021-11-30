@@ -42,14 +42,11 @@ export function createBackgroundLayer(backgrounds, backgroundSprite) {
 
 /**
  * 创建绘制图像的函数：在回调中绘制图像
- * @param {UnitStyleSheet} sprite 单元图像样式对象
- * @param {{ x: number, y: number }}} pos 初始位置
+ * @param {Entity} marioEntity 马里奥实体
  * @returns 绘制图像的回调
  */
-export function createrSpriteLayer(sprite, pos) {
+export function createrSpriteLayer(marioEntity) {
     return function drawSpriteLayer(context) {
-        for (let i = 0; i < 20; i++) {
-            sprite.draw('mario', context, pos.x + i * 16, pos.y);
-        }
+        marioEntity.draw(context);
     }
 }
