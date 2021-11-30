@@ -1,8 +1,8 @@
-import { Victor } from "./Vector.js";
+import { Velocity } from "./Velocity.js";
 
 export class Entity {
     constructor() {
-        this.pos = new Victor(0, 0);
-        this.vel = new Victor(0, 0);
+        this.pos = new Velocity(0, 0);
+        this.vel = new Velocity(0, 0);
     }
 }
