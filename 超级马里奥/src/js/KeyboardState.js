@@ -1,7 +1,9 @@
 export const STATE_KEYDOWN = 1;
 export const STATE_KEYUP = 0;
 
-export const KEYCODE_SPACE = 32;
+export const CODE_SPACE = "Space";
+export const CODE_RIGHT = "ArrowRight";
+export const CODE_LEFT = "ArrowLeft";
 
 
 export class KeyboardState {
@@ -13,15 +15,14 @@ export class KeyboardState {
         this.keyMap = new Map();
     }
 
-    addMapping = (keyCode, callback) => {
-
+    addMapping = (code, callback) => {
         // 添加map映射
-        this.keyMap.set(keyCode, callback);
+        this.keyMap.set(code, callback);
     }
 
     handleEvent = event => {
-        const { keyCode } = event;
-        if (!this.keyMap.has(keyCode)) {
+        const { code } = event;
+        if (!this.keyMap.has(code)) {
             return;
         }
 
@@ -30,13 +31,13 @@ export class KeyboardState {
         const keyState = event.type === 'keydown' ? STATE_KEYDOWN : STATE_KEYUP;
         
         // 如果当前键盘状态已经存在了，就不再添加新的相同的状态
-        if (this.keyStates.get(keyCode) === keyState) {
+        if (this.keyStates.get(code) === keyState) {
             return;
         }
 
-        this.keyStates.set(keyCode, keyState);
+        this.keyStates.set(code, keyState);
 
-        const callback = this.keyMap.get(keyCode);
+        const callback = this.keyMap.get(code);
         callback(keyState);
     }
 

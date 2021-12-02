@@ -1,6 +1,6 @@
 import { Entity } from "./Entity.js"
-import { VelocityTrait } from './traits/VelocityTrait.js'
 import { JumpTrait } from './traits/JumpTrait.js'
+import { GoTrait } from './traits/GoTrait.js'
 import { loadMarioSprite } from "./sprites.js";
 
 export function createMario() {
@@ -8,12 +8,14 @@ export function createMario() {
         .then(marioSprite => {
             const mario = new Entity();
 
+            mario.size.set(14, 16);
+
             mario.draw = function drawMario(context) {
                 marioSprite.draw('mario', context, this.pos.x, this.pos.y);
             }
 
-            // 添加马里奥的特征：1、速度；2、跳跃
-            mario.addTrait(new VelocityTrait());
+            // 添加马里奥的特征：1、跳跃；2、方向（第五节删除了速度，因为碰撞检测的时候才会对速度特征进行修改，而非update的时候进行修改）
+            mario.addTrait(new GoTrait());
             mario.addTrait(new JumpTrait());
 
             return mario;

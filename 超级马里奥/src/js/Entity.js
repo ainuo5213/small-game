@@ -1,4 +1,4 @@
-import { Velocity } from "./Velocity.js";
+import { Vector } from "./Math.js";
 
 // 特征抽象类，其具体特征和update方法交由子类实现，例如跳跃、速度特征
 export class Trait {
@@ -13,9 +13,9 @@ export class Trait {
 
 export class Entity {
     constructor() {
-        this.pos = new Velocity(0, 0);
-        this.vel = new Velocity(0, 0);
-
+        this.pos = new Vector(0, 0);
+        this.vel = new Vector(0, 0);
+        this.size = new Vector(0, 0);
         this.traits = [];
     }
 

@@ -1,10 +1,8 @@
 import { loadLevelAsync } from "./loader.js";
-import { loadBackgroundSprites } from "./sprites.js";
 import Timer from "./Timer.js";
-import { Compositor } from "./Compositor.js";
 import { createMario } from "./mario.js";
-import { createBackgroundLayer, createrSpriteLayer } from "./layers.js";
-import { KeyboardState, KEYCODE_SPACE, STATE_KEYDOWN } from './KeyboardState.js'
+import { createCollisionLayer } from "./layers.js"
+import setupKeyboard from "./setupKeyboard.js"
 
 const canvas = document.getElementById("screen");
 const context = canvas.getContext("2d");
@@ -13,45 +11,36 @@ const context = canvas.getContext("2d");
 // load函数全部放到一起执行
 Promise.all([
     createMario(),
-    loadBackgroundSprites(),
     loadLevelAsync('1-1')
-]).then(([mario, backgroundSprite, level]) => {
-    const comp = new Compositor();
+]).then(([mario, level]) => {
+    mario.pos.set(64, 64);
 
-    // 创建绘制背景的回调
-    const backgroundLayer = createBackgroundLayer(level.backgrounds, backgroundSprite);
-    comp.layers.push(backgroundLayer);
+    // 加入碰撞检测的layer
+    const collisionLayer = createCollisionLayer(level);
+    level.compositor.layers.push(collisionLayer);
 
-    // 模拟重力加速度
-    const gravity = 2000;
-    mario.pos.set(64, 180);
-    mario.vel.set(200, -600);
+    level.entities.add(mario);
 
+    // 加载键盘绑定事件
+    const keyboard = setupKeyboard(mario);
 
-    // 监听键盘的空格事件
-    const keyboard = new KeyboardState();
-
-    // 添加键盘空格键的映射，并设置一个回调来使马里奥跳跃
-    keyboard.addMapping(KEYCODE_SPACE, keyState => {
-        if (keyState === STATE_KEYDOWN) {
-            mario.jump.start();
-        }
-        else {
-            mario.jump.cancel();
-        }
-    });
     keyboard.listenTo(window);
 
-    // 创建马里奥图像的回调
-    const marioSpriteLayer = createrSpriteLayer(mario);
-    comp.layers.push(marioSpriteLayer);
+    ["mousedown", "mousemove"].forEach(eventName => {
+        canvas.addEventListener(eventName, event => {
+            // 如果按了鼠标左键，就将马里奥拖拽（设置速度为0，位置为点击时和鼠标移动时的位置）
+            if (event.buttons === 1) {
+                mario.vel.set(0, 0);
+                mario.pos.set(event.offsetX, event.offsetY);
+            }
+        });
+    });
 
     const timer = new Timer(1 / 60);
 
     timer.update = function (deltaTime) {
-        mario.update(deltaTime);
-        comp.draw(context);
-        mario.vel.y += gravity * deltaTime;
+        level.update(deltaTime);
+        level.compositor.draw(context);
     }
 
     timer.start();
