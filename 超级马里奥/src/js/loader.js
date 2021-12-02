@@ -13,6 +13,7 @@ export function loadImageAsync(url) {
 }
 
 function loadTiles(level, backgrounds) {
+    // 将地图数据中的每一个背景图层都加载到level对象的tiles中，为以后进行碰撞检测打下数据基础
     backgrounds.forEach(({ tile, ranges }) => {
         ranges.forEach(([x1, x2, y1, y2]) => {
             for (let x = x1; x < x2; x++) {
@@ -35,7 +36,7 @@ export function loadLevelAsync(name) {
     .then(([levelJson, backgroundSprite]) => {
         const level = new Level();
 
-        // 加载level中的matrix每一个格子的数据
+        // 加载level中的matrix每一个格子的数据到tiles
         loadTiles(level, levelJson.backgrounds);
 
         // 创建绘制背景的回调

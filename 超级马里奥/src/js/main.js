@@ -24,6 +24,7 @@ Promise.all([
     // 加载键盘绑定事件
     const keyboard = setupKeyboard(mario);
 
+    // 开启监听键盘事件
     keyboard.listenTo(window);
 
     ["mousedown", "mousemove"].forEach(eventName => {

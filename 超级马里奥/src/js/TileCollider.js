@@ -6,7 +6,13 @@ export default class TileCollider {
         this.tileResolver = new TileResolver(tiles);
     }
 
+    /**
+     * 马里奥Y方向的碰撞检测
+     * @param {Entity} entity 马里奥实体
+     */
     checkY = entity => {
+
+        // 这里不检测马里奥当前这个格子，做一个优化
         let y;
         if (entity.vel.y > 0) {
             y = entity.pos.y + entity.size.y
@@ -15,6 +21,8 @@ export default class TileCollider {
         } else {
             return;
         }
+
+        // 找马里奥当前所在的格子范围，然后对每个格子进行碰撞检测：即马里奥y方向的高度和马里奥自己的高度与匹配出的格子高度对比
         const matches = this.tileResolver.searchByRange(
             entity.pos.x,
             entity.pos.x + entity.size.x,
@@ -22,11 +30,12 @@ export default class TileCollider {
             y);
         matches.forEach(match => {
             if (!match) {
-                return false;
+                return;
             }
 
+            // 跳过非大地的tile
             if (match.tile.name !== "ground") {
-                return false;
+                return;
             }
 
             if (entity.vel.y > 0) {
@@ -44,6 +53,7 @@ export default class TileCollider {
     }
 
     checkX = entity => {
+        // 原理同checkY
         let x;
         if (entity.vel.x > 0) {
             x = entity.pos.x + entity.size.x
@@ -79,10 +89,5 @@ export default class TileCollider {
                 }
             }
         });
-    }
-
-    test = entity => {
-        this.checkY(entity);
-        this.checkX(entity);
     }
 }

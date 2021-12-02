@@ -45,7 +45,7 @@ export function createCollisionLayer(level) {
     const tileResolver = level.tileCollider.tiles;
     const tileSize = tileResolver.tileSize;
 
-    // 重写碰撞检测，将每一个匹配到的x和y加入临时数组（我认为在这里仅作为调试用）
+    // 重写碰撞检测，将每一个匹配到的x和y加入临时数组（我认为在这里仅作为调试用，我认为甚至不写都行）
     const getByIndexOriginal = tileResolver.getByIndex;
     tileResolver.getByIndex = function getByIndexFake(x, y) {
         resolveTiles.push({ x, y });

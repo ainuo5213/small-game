@@ -11,6 +11,7 @@ export class GoTrait extends Trait {
         this.speed = 6000;
     }
 
+    // 更新马里奥的x方向的速度（含当前马里奥的方向）
     update = (entity, deltaTime) => {
         entity.vel.x = this.speed * this.dir * deltaTime;
     }

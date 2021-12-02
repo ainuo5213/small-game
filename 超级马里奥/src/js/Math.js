@@ -1,4 +1,5 @@
 
+// 矢量对象
 export class Vector {
     constructor(x, y) {
         this.x = x;
@@ -11,6 +12,10 @@ export class Vector {
     }
 }
 
+// 矩阵数据，是个二维数组，存储渲背景（sky和ground）的每个单元格（16x16）的数据，数据例子：
+// [
+//  [{ tile: 'groud'}, { tile: 'sky' }], []
+// ]
 export class Matrix {
     constructor() {
         this.grid = [];

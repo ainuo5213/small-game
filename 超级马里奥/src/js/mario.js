@@ -8,6 +8,7 @@ export function createMario() {
         .then(marioSprite => {
             const mario = new Entity();
 
+            // 设置马里奥的大小
             mario.size.set(14, 16);
 
             mario.draw = function drawMario(context) {
