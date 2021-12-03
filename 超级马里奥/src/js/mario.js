@@ -12,7 +12,7 @@ export function createMario() {
             mario.size.set(14, 16);
 
             mario.draw = function drawMario(context) {
-                marioSprite.draw('mario', context, this.pos.x, this.pos.y);
+                marioSprite.draw('mario', context, 0, 0);
             }
 
             // 添加马里奥的特征：1、跳跃；2、方向（第五节删除了速度，因为碰撞检测的时候才会对速度特征进行修改，而非update的时候进行修改）

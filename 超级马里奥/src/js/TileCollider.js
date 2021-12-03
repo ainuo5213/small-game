@@ -34,7 +34,7 @@ export default class TileCollider {
             }
 
             // 跳过非大地的tile
-            if (match.tile.name !== "ground") {
+            if (match.tile.type !== "ground") {
                 return;
             }
 
