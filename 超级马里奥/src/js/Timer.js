@@ -5,6 +5,11 @@ export default class Timer {
 
         this.updateProxy = time => {
             accumulatedTime += (time - lastTime) / 1000;
+
+            // 稍微设置一下累加事件，使其最大不超过1
+            if (accumulatedTime > 1) {
+                accumulatedTime = 1;
+            }
             while (accumulatedTime > deltaTime) {
                 this.update(deltaTime);
                 accumulatedTime -= deltaTime

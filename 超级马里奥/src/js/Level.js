@@ -7,6 +7,8 @@ export class Level {
         // 重力加速度
         this.gravity = 2000;
 
+        this.totalTime = 0;
+
         // 组合器
         this.compositor = new Compositor();
 
@@ -31,5 +33,7 @@ export class Level {
             this.tileCollider.checkY(entity);
             entity.vel.y += this.gravity * deltaTime;
         });
+
+        this.totalTime += deltaTime;
     }
 }

@@ -18,11 +18,6 @@ export function createBackgroundLayer(level, backgroundSprite) {
 
 
     function redraw(drawFrom, drawTo) {
-
-        if (drawFrom === startIndex && drawTo === endIndex) {
-            return;
-        }
-
         startIndex = drawFrom;
         endIndex = drawTo;
 
@@ -30,7 +25,13 @@ export function createBackgroundLayer(level, backgroundSprite) {
             const col = tiles.grid[x];
             if (col) {
                 col.forEach((tile, y) => {
-                    backgroundSprite.drawTile(tile.name, bufferContext, x - drawFrom, y);
+                    // 如果当前tile有动画则执行动画
+                    if (backgroundSprite.animations.has(tile.name)) {
+                        backgroundSprite.drawAnim(tile.name, bufferContext, x - drawFrom, y, level.totalTime);
+                    }
+                    else {
+                        backgroundSprite.drawTile(tile.name, bufferContext, x - drawFrom, y);
+                    }
                 })
             }
         }

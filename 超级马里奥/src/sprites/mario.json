@@ -1,0 +1,23 @@
+{
+    "tileImgUrl": "/src/assets/characters.png",
+    "tileWidth": 16,
+    "tileHeight": 16,
+    "frames": [
+        {
+            "name": "mario",
+            "rect": [276, 44, 16, 16]
+        },
+        {
+            "name": "mario-run-1",
+            "rect": [290, 44, 16, 16]
+        },
+        {
+            "name": "mario-run-2",
+            "rect": [304, 44, 16, 16]
+        },
+        {
+            "name": "mario-run-3",
+            "rect": [321, 44, 16, 16]
+        }
+    ]
+}

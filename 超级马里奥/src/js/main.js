@@ -2,7 +2,6 @@ import { loadLevelAsync } from "./loader.js";
 import Timer from "./Timer.js";
 import Camera from "./Camera.js";
 import { createMario } from "./mario.js";
-import { createCollisionLayer, createCameraLayer } from "./layers.js"
 import setupKeyboard from "./setupKeyboard.js"
 import { setupMouseControl } from "./debug.js"
 
@@ -16,16 +15,8 @@ Promise.all([
     loadLevelAsync('1-1')
 ]).then(([mario, level]) => {
     const camera = new Camera();
-    window.camera = camera;
-
 
     mario.pos.set(64, 64);
-
-    // 加入碰撞检测的layer
-    const collisionLayer = createCollisionLayer(level);
-    level.compositor.layers.push(collisionLayer);
-    const cameraLayer = createCameraLayer(camera);
-    level.compositor.layers.push(cameraLayer);
 
     level.entities.add(mario);
 
