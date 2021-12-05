@@ -3,7 +3,7 @@ import Timer from "./Timer.js";
 import Camera from "./Camera.js";
 import { createMario } from "./mario.js";
 import setupKeyboard from "./setupKeyboard.js"
-import { setupMouseControl } from "./debug.js"
+// import { setupMouseControl } from "./debug.js"
 
 const canvas = document.getElementById("screen");
 const context = canvas.getContext("2d");
@@ -26,12 +26,15 @@ Promise.all([
     // 开启监听键盘事件
     keyboard.listenTo(window);
 
-    setupMouseControl(canvas, mario, camera);
+    // setupMouseControl(canvas, mario, camera);
 
     const timer = new Timer(1 / 60);
 
     timer.update = function (deltaTime) {
         level.update(deltaTime);
+        if (mario.pos.x > 100) {
+            camera.pos.x = mario.pos.x - 100;
+        }
         level.compositor.draw(context, camera);
     }
 

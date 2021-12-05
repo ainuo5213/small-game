@@ -1,5 +1,10 @@
 import { Vector } from "./Math.js";
 
+export const Sides = {
+    TOP: Symbol("top"),
+    BOTTOM: Symbol("bottom")
+}
+
 // 特征抽象类，其具体特征和update方法交由子类实现，例如跳跃、速度特征
 export class Trait {
     constructor(name) {
@@ -8,6 +13,9 @@ export class Trait {
 
     update = () => {
         console.warn('Unhandled update call in Trait');
+    }
+
+    obstruct = (entity, side) => {
     }
 }
 
@@ -31,6 +39,12 @@ export class Entity {
         // 更新时，将该实体的每一个特征中update方法执行一遍
         this.traits.forEach(trait => {
             trait.update(this, deltaTime);
+        })
+    }
+
+    obstruct = side => {
+        this.traits.forEach(trait => {
+            trait.obstruct(this, side);
         })
     }
 }

@@ -1,6 +1,7 @@
 export const STATE_KEYDOWN = 1;
 export const STATE_KEYUP = 0;
 
+export const CODE_UP = "ArrowUp";
 export const CODE_SPACE = "Space";
 export const CODE_RIGHT = "ArrowRight";
 export const CODE_LEFT = "ArrowLeft";
