@@ -75,11 +75,9 @@ export default class TileCollider {
             if (!match) {
                 return false;
             }
-
-            if (match.tile.name !== "ground") {
+            if (match.tile.type !== "ground") {
                 return false;
             }
-
             if (entity.vel.x > 0) {
                 if (entity.pos.x + entity.size.x > match.x1) {
                     entity.pos.x = match.x1 - entity.size.x;

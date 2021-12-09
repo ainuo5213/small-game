@@ -15,11 +15,13 @@ export class Level {
         // 实体列表
         this.entities = new Set();
 
-        // tile格子
-        this.tiles = new Matrix();
-
         // tile格子碰撞检测类
-        this.tileCollider = new TileCollider(this.tiles);
+        this.tileCollider = null;
+    }
+
+    setCollisionGrid = matrix => {
+        this.tiles = matrix;
+        this.tileCollider = new TileCollider(matrix);
     }
 
     update = deltaTime => {

@@ -1,4 +1,4 @@
-import { loadLevelAsync } from "./loader.js";
+import { loadLevelAsync } from "./loaders/level.js";
 import Timer from "./Timer.js";
 import Camera from "./Camera.js";
 import { createMario } from "./mario.js";

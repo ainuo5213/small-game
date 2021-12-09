@@ -1,36 +1,35 @@
+import TileResolver from "./TileResolver.js";
+
 /**
  * 创建绘制图像的函数：在回调中绘制图像
  * @param {Level} level Level对象，由loader导出的
+ * @param {Matrix} tile 局针对象
  * @param {UnitStyleSheet} backgroundSprite 单元图像样式对象
  * @returns {Function} 绘制图像的回调
  */
-export function createBackgroundLayer(level, backgroundSprite) {
-    const tiles = level.tiles;
-    const tileResolver = level.tileCollider.tileResolver;
+export function createBackgroundLayer(level, tiles, backgroundSprite) {
+    const tileResolver = new TileResolver(tiles);
 
     // 创建临时缓存区，使用闭包在外部绘制图像
     const buffer = document.createElement("canvas");
     buffer.width = 256 + 16;
     buffer.height = 240;
 
-    const bufferContext = buffer.getContext("2d");
-    let startIndex, endIndex;
+    const context = buffer.getContext("2d");
 
 
-    function redraw(drawFrom, drawTo) {
-        startIndex = drawFrom;
-        endIndex = drawTo;
-
+    function redraw(startIndex, endIndex) {
+        context.clearRect(0, 0, buffer.width, buffer.height);
         for (let x = startIndex; x <= endIndex; x++) {
             const col = tiles.grid[x];
             if (col) {
                 col.forEach((tile, y) => {
                     // 如果当前tile有动画则执行动画
                     if (backgroundSprite.animations.has(tile.name)) {
-                        backgroundSprite.drawAnim(tile.name, bufferContext, x - drawFrom, y, level.totalTime);
+                        backgroundSprite.drawAnim(tile.name, context, x - startIndex, y, level.totalTime);
                     }
                     else {
-                        backgroundSprite.drawTile(tile.name, bufferContext, x - drawFrom, y);
+                        backgroundSprite.drawTile(tile.name, context, x - startIndex, y);
                     }
                 })
             }
