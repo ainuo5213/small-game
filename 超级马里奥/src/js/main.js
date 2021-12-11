@@ -1,9 +1,9 @@
 import { loadLevelAsync } from "./loaders/level.js";
 import Timer from "./Timer.js";
 import Camera from "./Camera.js";
-import { createMario } from "./mario.js";
+import { LoadEntities } from "./entities.js";
 import setupKeyboard from "./setupKeyboard.js"
-// import { setupMouseControl } from "./debug.js"
+// import { createCollisionLayer } from "./layers.js"
 
 const canvas = document.getElementById("screen");
 const context = canvas.getContext("2d");
@@ -11,14 +11,38 @@ const context = canvas.getContext("2d");
 
 // load函数全部放到一起执行
 Promise.all([
-    createMario(),
+    LoadEntities(),
     loadLevelAsync('1-1')
-]).then(([mario, level]) => {
+]).then(([entities, level]) => {
     const camera = new Camera();
-
+    const mario = entities.mario();
+    const goomba = entities.goomba();
+    const koopa = entities.koopa();
+    goomba.pos.x = 220;
+    koopa.pos.x = 260;
     mario.pos.set(64, 64);
+    // mario.addTrait({
+    //     Name: 'hackTriate',
+    //     spawnTimeout: 0,
+    //     obstruct() {
+    //     },
+    //     update(mario, deltaTime) {
+    //         if (this.spawnTimeout > 0.1 && mario.vel.y < 0) {
+    //             const spawn = createMario();
+    //             spawn.pos.x = mario.pos.x;
+    //             spawn.pos.y = mario.pos.y;
+    //             spawn.vel.y = mario.vel.x - 200;
+    //             level.entities.add(spawn);
+    //             this.spawnTimeout = 0;
+    //         }
+    //         this.spawnTimeout += deltaTime;
+    //     }
+    // });
 
     level.entities.add(mario);
+    level.entities.add(goomba);
+    level.entities.add(koopa);
+    // level.compositor.layers.push(createCollisionLayer(level));
 
     // 加载键盘绑定事件
     const keyboard = setupKeyboard(mario);

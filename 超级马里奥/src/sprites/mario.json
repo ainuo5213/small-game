@@ -27,5 +27,16 @@
             "name": "mario-jump",
             "rect": [355, 44, 16, 16]
         }
+    ],
+    "animations": [
+        {
+            "name": "run",
+            "frameLength": 10,
+            "frames": [
+                "mario-run-1",
+                "mario-run-2",
+                "mario-run-3"
+            ]
+        }
     ]
 }
