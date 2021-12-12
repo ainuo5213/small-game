@@ -4,31 +4,51 @@ import { Level } from "../Level.js";
 import { loadJson, loadSpriteSheet } from "../loader.js";
 
 
-export function loadLevelAsync(name) {
-    return loadJson(`/src/levels/${name}.json`)
-        .then(data => Promise.all([data, loadSpriteSheet(data.spriteSheet)]))
-        .then(([levelJson, backgroundSprite]) => {
-            const level = new Level();
+function setupCollision(levelJson, level) {
+    // 加载level中的matrix每一个格子的数据到tiles
+    const mergedTiles = levelJson.layers.reduce((mergedTiles, layer) => {
+        return mergedTiles.concat(layer.tiles);
+    }, []);
+    const collisionGrid = createCollisionGrid(mergedTiles, levelJson.patterns);
+    level.setCollisionGrid(collisionGrid);
+}
 
-            // 加载level中的matrix每一个格子的数据到tiles
-            const mergedTiles = levelJson.layers.reduce((mergedTiles, layer) => {
-                return mergedTiles.concat(layer.tiles);
-            }, []);
-            const collisionGrid = createCollisionGrid(mergedTiles, levelJson.patterns);
-            level.setCollisionGrid(collisionGrid);
+function setupBackgrounds(levelJson, level, backgroundSprite) {
+    levelJson.layers.forEach(layer => {
+        const backgroundGrid = createBackgroundGrid(layer.tiles, levelJson.patterns);
+        const backgroundLayer = createBackgroundLayer(level, backgroundGrid, backgroundSprite);
+        level.compositor.layers.push(backgroundLayer);
+    })
+}
 
-            levelJson.layers.forEach(layer => {
-                const backgroundGrid = createBackgroundGrid(layer.tiles, levelJson.patterns);
-                const backgroundLayer = createBackgroundLayer(level, backgroundGrid, backgroundSprite);
-                level.compositor.layers.push(backgroundLayer);
+function setupEntities(levelJson, level, entityFactory) {
+    levelJson.entities.forEach(({name, pos: [x, y]}) => {
+        const createEntity = entityFactory[name];
+        const entity = createEntity();
+        entity.pos.set(x, y);
+        level.entities.add(entity);
+    })
+
+    const marioSpriteLayer = createrSpriteLayer(level.entities);
+    level.compositor.layers.push(marioSpriteLayer);
+}
+
+export function createLevelLoader(entityFactory) {
+    return function loadLevelAsync(name) {
+        return loadJson(`/src/levels/${name}.json`)
+            .then(data => Promise.all([data, loadSpriteSheet(data.spriteSheet)]))
+            .then(([levelJson, backgroundSprite]) => {
+                const level = new Level();
+
+                setupCollision(levelJson, level);
+                setupBackgrounds(levelJson, level, backgroundSprite);
+
+                // 创建马里奥图像的回调
+                setupEntities(levelJson, level, entityFactory);
+
+                return level;
             })
-
-            // 创建马里奥图像的回调
-            const marioSpriteLayer = createrSpriteLayer(level.entities);
-            level.compositor.layers.push(marioSpriteLayer);
-
-            return level;
-        })
+    }
 }
 
 function* expandSpan(xStart, xLen, yStart, yLen) {
@@ -59,15 +79,14 @@ function expandRange(range) {
 
 function* expandRanges(ranges) {
     for (const range of ranges) {
-        for (const item of expandRange(range)) {
-            yield item
-        }
+        yield* expandRange(range); // yield 用法，yield用于函数时需要加上*
     }
 }
 
-function expandTiles(tiles, patterns) {
-    const expandedTiles = [];
-    function walkTiles(tiles, offsetX, offsetY) {
+
+function* expandTiles(tiles, patterns) {
+    // yield替代递归，降低空间复杂度
+    function* walkTiles(tiles, offsetX, offsetY) {
         // 将地图数据中的每一个背景图层都加载到level对象的tiles中，为以后进行碰撞检测打下数据基础
         for (const tile of tiles) {
             for (const { x, y } of expandRanges(tile.ranges)) {
@@ -75,19 +94,18 @@ function expandTiles(tiles, patterns) {
                 const derivedY = y + offsetY;
                 if (tile.pattern) {
                     const tiles = patterns[tile.pattern].tiles;
-                    walkTiles(tiles, derivedX, derivedY);
+                    yield* walkTiles(tiles, derivedX, derivedY);
                 } else {
-                    expandedTiles.push({
+                    yield {
                         tile,
                         x: derivedX,
                         y: derivedY
-                    });
+                    };
                 }
             }
         }
     }
-    walkTiles(tiles, 0, 0);
-    return expandedTiles;
+    yield* walkTiles(tiles, 0, 0);
 }
 
 function createCollisionGrid(tiles, patterns) {
